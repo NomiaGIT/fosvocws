@@ -1,0 +1,156 @@
+package logica.productos.refaccion;
+
+
+import java.io.PrintStream;
+
+import java.io.Serializable;
+
+import java.util.Vector;
+
+import logica.productos.Prestamo;
+
+import logica.productos.lineaPrestamo;
+
+import logica.viviendas.ViviendaAReparar;
+
+
+public class Refaccion extends Prestamo
+implements Serializable
+{
+	public double totalSolicitado;
+	private ViviendaAReparar vivienda;
+	private Cotizacion cotizacion;
+	private Vector<String> detalle;
+	private int cantCuotasSolicitadas;
+
+	
+	public Refaccion(String tipo, String nombre, int codigo,
+			lineaPrestamo linea, double total, ViviendaAReparar viv,
+			Cotizacion cot, Vector<String> detalle, int cantCuotas)
+	{
+		/* 29 */super(tipo, nombre, codigo, linea);
+		/* 30 */this.totalSolicitado = total;
+		/* 31 */this.vivienda = viv;
+		/* 32 */this.cotizacion = cot;
+		/* 33 */this.detalle = detalle;
+		/* 34 */this.cantCuotasSolicitadas = cantCuotas;
+		}
+
+	
+	public Refaccion(Prestamo prestamo, double total,
+			ViviendaAReparar viv, Cotizacion cot, Vector<String> detalle,
+			int cantCuotas)
+	{
+		/* 43 */super(prestamo.getTipo(), prestamo.getNombre(), prestamo
+				.getCodigo(),
+		/* 43 */prestamo.getLinea());
+		/* 44 */this.totalSolicitado = total;
+		/* 45 */this.vivienda = viv;
+		/* 46 */this.cotizacion = cot;
+		/* 47 */this.detalle = detalle;
+		/* 48 */this.cantCuotasSolicitadas = cantCuotas;
+		}
+
+	
+	public double getTotalSolicitado()
+	{
+		/* 55 */return this.totalSolicitado;
+		}
+
+	
+	public void setTotalSolicitado(double totalSolicitado)
+	{
+		/* 63 */this.totalSolicitado = totalSolicitado;
+		}
+
+	
+	public ViviendaAReparar getVivienda()
+	{
+		/* 70 */return this.vivienda;
+		}
+
+	
+	public void setVivienda(ViviendaAReparar vivienda)
+	{
+		/* 78 */this.vivienda = vivienda;
+		}
+
+	
+	public Cotizacion getCotizacion()
+	{
+		/* 85 */return this.cotizacion;
+		}
+
+	
+	public void setCotizacion(Cotizacion cotizacion)
+	{
+		/* 93 */this.cotizacion = cotizacion;
+		}
+
+	
+	public Vector<String> getDetalle()
+	{
+		return this.detalle;
+		}
+
+	
+	public void setDetalle(Vector<String> detalle)
+	{
+		this.detalle = detalle;
+		}
+
+	
+	public int getCantCuotasSolicitadas()
+	{
+		return this.cantCuotasSolicitadas;
+		}
+
+	
+	public void setCantCuotasSolicitadas(int cantCuotasSolicitadas)
+	{
+		this.cantCuotasSolicitadas = cantCuotasSolicitadas;
+		}
+
+	
+	public Prestamo getPrestamo()
+	{
+		Prestamo pre = new Prestamo(super.getTipo(),
+				super.getNombre(),
+				super.getCodigo(), super.getLinea());
+		return pre;
+		}
+
+	
+	public String getString(Vector<String> detalle) {
+		String resu = new String();
+		for (String pal : detalle) {
+			resu.concat(pal + ",");
+			}
+		return resu;
+		}
+
+	
+	public Vector<String> toVector(String detalles) {
+		Vector resu = new Vector();
+		char[] array = detalles.toCharArray();
+		String pal = new String();
+		for (int i = 0; i < detalles.length(); i++) {
+			if (array[i] != ',') {
+				pal = pal + array[i];
+				} else {
+				resu.add(pal);
+				System.out.println(pal);
+				pal = "";
+				}
+			
+			}
+		
+		return resu;
+		}
+	
+}
+
+/*
+ * Location: C:\Users\Sole\Desktop\servidor\ Qualified Name:
+ * logica.productos.refaccion.Refaccion JD-Core Version: 0.6.0
+ */

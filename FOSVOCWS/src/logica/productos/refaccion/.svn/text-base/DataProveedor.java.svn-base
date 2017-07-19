@@ -1,0 +1,45 @@
+/*    */package logica.productos.refaccion;
+
+/*    */
+/*    */import java.io.Serializable;
+
+/*    */
+/*    */public class DataProveedor
+/*    */implements Serializable
+/*    */{
+	/*    */private int id;
+	/*    */private String nombreProveedor;
+
+	/*    */
+	/*    */public DataProveedor(int id, String nombreProveedor)
+	/*    */{
+		/* 12 */this.id = id;
+		/* 13 */this.nombreProveedor = nombreProveedor;
+		/*    */}
+
+	/*    */
+	/*    */public int getId() {
+		/* 17 */return this.id;
+		/*    */}
+
+	/*    */
+	/*    */public void setId(int id) {
+		/* 21 */this.id = id;
+		/*    */}
+
+	/*    */
+	/*    */public String getNombreProveedor() {
+		/* 25 */return this.nombreProveedor;
+		/*    */}
+
+	/*    */
+	/*    */public void setNombreProveedor(String nombreProveedor) {
+		/* 29 */this.nombreProveedor = nombreProveedor;
+		/*    */}
+	/*    */
+}
+
+/*
+ * Location: C:\Users\Sole\Desktop\servidor\ Qualified Name:
+ * logica.productos.refaccion.DataProveedor JD-Core Version: 0.6.0
+ */

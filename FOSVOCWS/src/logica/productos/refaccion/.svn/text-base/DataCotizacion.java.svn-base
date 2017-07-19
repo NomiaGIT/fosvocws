@@ -1,0 +1,45 @@
+/*    */package logica.productos.refaccion;
+
+/*    */
+/*    */import java.io.Serializable;
+
+/*    */
+/*    */public class DataCotizacion
+/*    */implements Serializable
+/*    */{
+	/*    */private Cotizacion cot;
+	/*    */private int id;
+
+	/*    */
+	/*    */public DataCotizacion(Cotizacion cot, int id)
+	/*    */{
+		/* 11 */this.cot = cot;
+		/* 12 */this.id = id;
+		/*    */}
+
+	/*    */
+	/*    */public Cotizacion getCot() {
+		/* 16 */return this.cot;
+		/*    */}
+
+	/*    */
+	/*    */public void setCot(Cotizacion cot) {
+		/* 20 */this.cot = cot;
+		/*    */}
+
+	/*    */
+	/*    */public int getId() {
+		/* 24 */return this.id;
+		/*    */}
+
+	/*    */
+	/*    */public void setId(int id) {
+		/* 28 */this.id = id;
+		/*    */}
+	/*    */
+}
+
+/*
+ * Location: C:\Users\Sole\Desktop\servidor\ Qualified Name:
+ * logica.productos.refaccion.DataCotizacion JD-Core Version: 0.6.0
+ */

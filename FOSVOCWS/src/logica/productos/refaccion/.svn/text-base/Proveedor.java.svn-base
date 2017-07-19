@@ -1,0 +1,92 @@
+package logica.productos.refaccion;
+
+
+import java.io.Serializable;
+
+
+public class Proveedor
+implements Serializable
+{
+	public String NombreBarraca;
+	public String Direccion;
+	public String Telefono;
+	public String Razonsocial;
+	private long RUT;
+
+	
+	public Proveedor(String nombreBarraca, String direccion,
+			String telefono, String razonsocial, long rut)
+	{
+		/* 28 */this.NombreBarraca = nombreBarraca;
+		/* 29 */this.Direccion = direccion;
+		/* 30 */this.Telefono = telefono;
+		/* 31 */this.Razonsocial = razonsocial;
+		/* 32 */this.RUT = rut;
+		}
+
+	
+	public String getRazonsocial()
+	{
+		/* 39 */return this.Razonsocial;
+		}
+
+	
+	public void setRazonsocial(String razonsocial)
+	{
+		/* 47 */this.Razonsocial = razonsocial;
+		}
+
+	
+	public String getNombreBarraca()
+	{
+		/* 54 */return this.NombreBarraca;
+		}
+
+	
+	public void setNombreBarraca(String nombreBarraca)
+	{
+		/* 62 */this.NombreBarraca = nombreBarraca;
+		}
+
+	
+	public String getDireccion()
+	{
+		/* 69 */return this.Direccion;
+		}
+
+	
+	public void setDireccion(String direccion)
+	{
+		/* 77 */this.Direccion = direccion;
+		}
+
+	
+	public String getTelefono()
+	{
+		/* 84 */return this.Telefono;
+		}
+
+	
+	public void setTelefono(String telefono)
+	{
+		/* 92 */this.Telefono = telefono;
+		}
+
+	
+	public long getRUT()
+	{
+		/* 99 */return this.RUT;
+		}
+
+	
+	public void setRUT(long rUT)
+	{
+		this.RUT = rUT;
+		}
+	
+}
+
+/*
+ * Location: C:\Users\Sole\Desktop\servidor\ Qualified Name:
+ * logica.productos.refaccion.Proveedor JD-Core Version: 0.6.0
+ */

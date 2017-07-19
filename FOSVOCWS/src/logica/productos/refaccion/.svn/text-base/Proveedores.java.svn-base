@@ -1,0 +1,371 @@
+package logica.productos.refaccion;
+
+
+import excepciones.PersistenciaException;
+
+import java.sql.PreparedStatement;
+
+import java.sql.ResultSet;
+
+import java.sql.SQLException;
+
+import java.util.Vector;
+import persistencia.Transaccion;
+import valueObjects.DataListadoProveedores;
+
+
+public class Proveedores
+{
+	public Proveedor buscar(Transaccion t, String nombrebarraca)
+	throws PersistenciaException
+	{
+		/* 15 */Proveedor prov = null;
+		/* 16 */String nombreBarraca = null;
+		/* 17 */String razonsocial = null;
+		/* 18 */String direccion = null;
+		/* 19 */String telefono = null;
+		/* 20 */long rut = 0L;
+		try
+		{
+			/* 23 */PreparedStatement prep = t
+					/* 24 */.prepareStatement("SELECT * FROM Proveedores WHERE nombre = ?;");
+			
+			/* 26 */prep.setString(1, nombrebarraca);
+			/* 27 */ResultSet rs = prep.executeQuery();
+			
+			/* 30 */if (rs.next())
+			{
+				/* 32 */nombreBarraca = rs.getString(2);
+				/* 33 */razonsocial = rs.getString(3);
+				/* 34 */direccion = rs.getString(4);
+				/* 35 */telefono = rs.getString(5);
+				/* 36 */rut = rs.getLong(6);
+				/* 37 */prov = new Proveedor(nombreBarraca, direccion,
+						telefono,
+						/* 38 */razonsocial, rut);
+				}
+			} catch (SQLException e) {
+			/* 41 */throw new PersistenciaException(e.getMessage());
+			} catch (PersistenciaException e) {
+			/* 43 */throw new PersistenciaException(e.getMessage());
+			}
+		
+		/* 46 */return prov;
+		}
+
+	
+	public int buscarIdProveedor(Transaccion t, String nombrebarraca)
+	throws PersistenciaException
+	{
+		/* 52 */int prov = 0;
+		try
+		{
+			/* 55 */PreparedStatement prep = t
+					/* 56 */.prepareStatement("SELECT id FROM Proveedores WHERE nombre = ?;");
+			
+			/* 58 */prep.setString(1, nombrebarraca);
+			/* 59 */ResultSet rs = prep.executeQuery();
+			
+			/* 62 */if (rs.next())
+				/* 63 */prov = rs.getInt(1);
+			}
+		catch (SQLException e) {
+			/* 66 */throw new PersistenciaException(e.getMessage());
+			} catch (PersistenciaException e) {
+			/* 68 */throw new PersistenciaException(e.getMessage());
+			}
+		
+		/* 71 */return prov;
+		}
+
+	
+	public Proveedor buscar(Transaccion t, long RUT)
+	throws PersistenciaException
+	{
+		/* 77 */Proveedor prov = null;
+		/* 78 */String nombreBarraca = null;
+		/* 79 */String razonsocial = null;
+		/* 80 */String direccion = null;
+		/* 81 */String telefono = null;
+		/* 82 */long rut = 0L;
+		try
+		{
+			/* 85 */PreparedStatement prep = t
+					.prepareStatement("SELECT * FROM Proveedores WHERE RUT = ?;");
+			
+			/* 87 */prep.setLong(1, RUT);
+			/* 88 */ResultSet rs = prep.executeQuery();
+			
+			/* 91 */if (rs.next())
+			{
+				/* 94 */nombreBarraca = rs.getString(2);
+				/* 95 */razonsocial = rs.getString(3);
+				/* 96 */direccion = rs.getString(4);
+				/* 97 */telefono = rs.getString(5);
+				/* 98 */rut = rs.getLong(6);
+				/* 99 */prov = new Proveedor(nombreBarraca, direccion,
+						telefono,
+						razonsocial, rut);
+				}
+			} catch (SQLException e) {
+			throw new PersistenciaException(e.getMessage());
+			} catch (PersistenciaException e) {
+			throw new PersistenciaException(e.getMessage());
+			}
+		
+		return prov;
+		}
+
+	
+	public void insertar(Transaccion t, Proveedor prov)
+	throws PersistenciaException
+	{
+		PreparedStatement prep = t
+				.prepareStatement("INSERT INTO Proveedores (nombre, razonSocial, direccion, telefonos, RUT) VALUES (?,?,?,?,?);");
+		try
+		{
+			prep.setString(1, prov.getNombreBarraca());
+			prep.setString(2, prov.getRazonsocial());
+			prep.setString(3, prov.getDireccion());
+			prep.setString(4, prov.getTelefono());
+			prep.setLong(5, prov.getRUT());
+			
+			if (prep.executeUpdate() != 1)
+				throw new PersistenciaException(
+				"No ha sido posible realizar la operación");
+			}
+		catch (SQLException e)
+		{
+			throw new PersistenciaException(e.getMessage());
+			} catch (PersistenciaException e) {
+			throw new PersistenciaException(e.getMessage());
+			}
+		}
+
+	
+	public int insertarInt(Transaccion t, Proveedor prov)
+	throws PersistenciaException
+	{
+		int key = 0;
+		ResultSet rs = null;
+		
+		PreparedStatement prep = t
+				.prepareStatement("INSERT INTO Proveedores (nombre, razonSocial, direccion, telefonos, RUT) VALUES (?,?,?,?,?);");
+		try
+		{
+			prep.setString(1, prov.getNombreBarraca());
+			prep.setString(2, prov.getRazonsocial());
+			prep.setString(3, prov.getDireccion());
+			prep.setString(4, prov.getTelefono());
+			prep.setLong(5, prov.getRUT());
+			
+			if (prep.executeUpdate() != 1) {
+				throw new PersistenciaException(
+				"No ha sido posible realizar la operación");
+				}
+			rs = prep.getGeneratedKeys();
+			
+			if (rs.next()) {
+				key = rs.getInt(1);
+				}
+			rs.close();
+			prep.close();
+			}
+		catch (SQLException e) {
+			throw new PersistenciaException(e.getMessage());
+			} catch (PersistenciaException e) {
+			throw new PersistenciaException(e.getMessage());
+			}
+		return key;
+		}
+
+	
+	public void modificar(Transaccion t, Proveedor prov)
+	throws PersistenciaException
+	{
+		PreparedStatement prep = t
+				.prepareStatement("UPDATE Proveedores SET RUT = ?, razonSocial = ?, direccion = ?, telefonos = ? WHERE nombre = ?;");
+		try
+		{
+			prep.setString(5, prov.getNombreBarraca());
+			prep.setString(2, prov.getRazonsocial());
+			prep.setString(3, prov.getDireccion());
+			prep.setString(4, prov.getTelefono());
+			prep.setLong(1, prov.getRUT());
+			
+			if (prep.executeUpdate() != 1)
+				throw new PersistenciaException(
+				"No ha sido posible realizar la operación");
+			}
+		catch (SQLException e)
+		{
+			throw new PersistenciaException(e.getMessage());
+			} catch (PersistenciaException e) {
+			throw new PersistenciaException(e.getMessage());
+			}
+		}
+
+	
+	public void eliminar(Transaccion t, String nombre)
+	throws PersistenciaException
+	{
+		PreparedStatement prep = t
+				.prepareStatement("DELETE FROM Proveedores WHERE nombre = ?;");
+		try
+		{
+			prep.setString(1, nombre);
+			if (prep.executeUpdate() != 1)
+				throw new PersistenciaException(
+				"No ha sido posible realizar la operación");
+			}
+		catch (SQLException e) {
+			throw new PersistenciaException(e.getMessage());
+			} catch (PersistenciaException e) {
+			throw new PersistenciaException(e.getMessage());
+			}
+		}
+
+	
+	public int getId(Transaccion t, String nombre)
+			throws PersistenciaException
+	{
+		int id = 0;
+		try
+		{
+			PreparedStatement prep = t
+					.prepareStatement("SELECT * id FROM Proveedores WHERE nombre = ?;");
+			
+			prep.setString(1, nombre);
+			ResultSet rs = prep.executeQuery();
+			
+			if (rs.next())
+				id = rs.getInt(1);
+			}
+		catch (SQLException e) {
+			throw new PersistenciaException(e.getMessage());
+			}
+		
+		return id;
+		}
+
+	
+	public Proveedor buscarPorId(Transaccion t, int idProveedor)
+			throws PersistenciaException
+	{
+		Proveedor pro = null;
+		try
+		{
+			PreparedStatement prep = t
+					.prepareStatement("SELECT * FROM Proveedores WHERE id = ?;");
+			
+			prep.setInt(1, idProveedor);
+			ResultSet rs = prep.executeQuery();
+			if (rs.next())
+				pro = new Proveedor(rs.getString(2), rs.getString(4),
+				rs.getString(5), rs.getString(3), rs.getLong(6));
+			}
+		catch (SQLException e) {
+			throw new PersistenciaException(e.getMessage());
+			} catch (PersistenciaException e) {
+			throw new PersistenciaException(e.getMessage());
+			}
+		
+		return pro;
+		}
+
+	
+	public Vector<DataProveedor> buscarDataProveedores(Transaccion t,
+			String nombreBarraca) throws PersistenciaException
+	{
+		Vector lista = new Vector();
+		String parametroNombreBarraca = "%" + nombreBarraca + "%";
+		try
+		{
+			PreparedStatement prep = t
+					.prepareStatement("SELECT Proveedores.id, Proveedores.nombre FROM Proveedores WHERE nombre LIKE ? ;");
+			prep.setString(1, parametroNombreBarraca);
+			
+			ResultSet rs = prep.executeQuery();
+			while (rs.next())
+			{
+				DataProveedor d = new DataProveedor(rs.getInt(1),
+				rs.getString(2));
+				lista.add(d);
+				}
+			} catch (SQLException e) {
+			throw new PersistenciaException(e.getMessage());
+			} catch (PersistenciaException e) {
+			throw new PersistenciaException(e.getMessage());
+			}
+		
+		return lista;
+		}
+
+	
+	public Vector<Proveedor> listar(Transaccion t)
+			throws PersistenciaException {
+		Vector lista = new Vector();
+		try
+		{
+			PreparedStatement prep = t
+					.prepareStatement("SELECT * FROM Proveedores ORDER BY nombre;");
+			
+			ResultSet rs = prep.executeQuery();
+			
+			while (rs.next())
+			{
+				Proveedor proveedor = new Proveedor(rs.getString(2),
+						rs.getString(4), rs.getString(5), rs.getString(3),
+						rs.getLong(6));
+				lista.add(proveedor);
+				}
+			}
+		catch (SQLException e) {
+			throw new PersistenciaException(e.getMessage());
+			} catch (PersistenciaException e) {
+			throw new PersistenciaException(e.getMessage());
+			}
+		
+		return lista;
+		}
+
+	
+	public Vector<DataListadoProveedores> listarConDepartamentos(Transaccion t)
+			throws PersistenciaException {
+		Vector<DataListadoProveedores> lista = new Vector<DataListadoProveedores>();
+		try
+		{
+			PreparedStatement prep = t
+					.prepareStatement("select proveedores.*, UPPER(domicilios.departamento) AS Depto "
+							+ "from domicilios, proveedores, domicilioreparar, refacciones, cotizaciones "
+							+ "where domicilios.id = domicilioreparar.idDomicilio "
+							+ "AND domicilioreparar.idDomicilio = refacciones.idDomicilioReparar "
+							+ "AND refacciones.idCotizacion = cotizaciones.id "
+							+ "AND cotizaciones.idProveedor = proveedores.id "
+							+ "GROUP BY proveedores.id ORDER BY Depto;");
+			
+			ResultSet rs = prep.executeQuery();
+			
+			while (rs.next())
+			{
+				DataListadoProveedores proveedor = new DataListadoProveedores(
+						rs.getString(2), rs.getString(4), rs.getString(5),
+						rs.getString(3), rs.getLong(6), rs.getString(7));
+				lista.add(proveedor);
+				}
+			}
+		catch (SQLException e) {
+			throw new PersistenciaException(e.getMessage());
+			} catch (PersistenciaException e) {
+			throw new PersistenciaException(e.getMessage());
+			}
+		
+		return lista;
+		}
+	
+}
+
+/*
+ * Location: C:\Users\Sole\Desktop\servidor\ Qualified Name:
+ * logica.productos.refaccion.Proveedores JD-Core Version: 0.6.0
+ */

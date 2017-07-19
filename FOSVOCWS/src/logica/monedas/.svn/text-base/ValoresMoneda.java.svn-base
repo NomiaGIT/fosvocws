@@ -1,0 +1,173 @@
+package logica.monedas;
+
+
+import excepciones.PersistenciaException;
+
+import java.io.PrintStream;
+
+import java.sql.PreparedStatement;
+
+import java.sql.ResultSet;
+
+import java.sql.SQLException;
+
+import java.util.Calendar;
+
+import persistencia.Transaccion;
+
+
+public class ValoresMoneda
+{
+	public double getCotizacionUI(Transaccion t, int mes, int anio)
+	throws PersistenciaException
+	{
+		/* 20 */return buscarValorUI(t, mes, anio);
+		}
+
+	
+	public void ingresarValorUI(Transaccion t, double valor, int mes,
+			int anio)
+	throws PersistenciaException
+	{
+		/* 26 */int dia = 1;
+		
+		/* 28 */int idMoneda = 1;
+		
+		/* 30 */Calendar calendar = Calendar.getInstance();
+		/* 31 */calendar.set(anio, mes, dia);
+		
+		/* 33 */java.sql.Date fecha = new java.sql.Date(calendar.getTime()
+				.getTime());
+		
+		/* 35 */PreparedStatement prep = t
+				/* 36 */.prepareStatement("INSERT INTO ValoresMoneda (idMoneda, fecha, valorPesos) VALUES (?,?,?);");
+		try {
+			/* 38 */prep.setInt(1, idMoneda);
+			/* 39 */prep.setDate(2, fecha);
+			/* 40 */prep.setDouble(3, valor);
+			
+			/* 42 */if (prep.executeUpdate() != 1)
+				/* 43 */throw new PersistenciaException(
+				/* 44 */"No ha sido posible realizar la operación");
+			}
+		catch (SQLException e)
+		{
+			/* 48 */throw new PersistenciaException(e.getMessage());
+			} catch (PersistenciaException e) {
+			/* 50 */throw new PersistenciaException(e.getMessage());
+			}
+		}
+
+	
+	public double buscarValorUI(Transaccion t, int mes, int anio)
+	throws PersistenciaException
+	{
+		double valor = 0.0D;
+		int dia = 1;
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(anio, mes, dia);
+		
+		
+		java.sql.Date fecha = new java.sql.Date(calendar.getTime()
+				.getTime());
+		try
+		{
+			PreparedStatement prep = t
+					.prepareStatement("SELECT valorPesos FROM ValoresMoneda WHERE fecha = ? AND idMoneda = ?;");
+			
+			prep.setDate(1, fecha);
+			
+			prep.setInt(2, 1);
+			
+			ResultSet rs = prep.executeQuery();
+			
+			if (rs.next())
+				valor = rs.getDouble(1);
+			
+		if(valor == 0)//si no hay valor, busco el del mes anterior
+		{
+			calendar.add(Calendar.MONTH, -1);
+			int mesA = calendar.get(Calendar.MONTH);
+			int anioA = calendar.get(Calendar.YEAR);
+			valor = this.buscarValorUI(t, mesA, anioA);
+		}
+	}
+		catch (SQLException e) {
+			throw new PersistenciaException(e.getMessage());
+			} catch (PersistenciaException e) {
+			throw new PersistenciaException(e.getMessage());
+			}
+		
+		return valor;
+		}
+
+	
+	public void modificarValorUI(Transaccion t, double nuevoValor,
+			int mes, int anio)
+	throws PersistenciaException
+	{
+		/* 92 */int dia = 1;
+		/* 93 */Calendar calendar = Calendar.getInstance();
+		/* 94 */calendar.set(anio, mes, dia);
+		
+		/* 96 */java.sql.Date fecha = new java.sql.Date(calendar.getTime()
+				.getTime());
+		
+		/* 98 */PreparedStatement prep = t
+				/* 99 */.prepareStatement("UPDATE TipoMoneda SET valorPesos = ? WHERE fecha = ? AND idMoneda = ?;");
+		try
+		{
+			prep.setDouble(1, nuevoValor);
+			prep.setDate(2, fecha);
+			
+			prep.setInt(3, 1);
+			
+			if (prep.executeUpdate() != 1)
+				throw new PersistenciaException(
+				"No ha sido posible realizar la operación");
+			}
+		catch (SQLException e)
+		{
+			throw new PersistenciaException(e.getMessage());
+			} catch (PersistenciaException e) {
+			throw new PersistenciaException(e.getMessage());
+			}
+		}
+	
+/**
+ * permite que el valor sea cero, en diferencia del otro que si es 0, busca el del mes anterior
+ */
+	public double getCotizacionUIUnico(Transaccion t, int mes, int anio) 
+	throws PersistenciaException{
+		// TODO Auto-generated method stub
+		double valor = 0.0D;
+		int dia = 1;
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(anio, mes, dia);
+		
+		
+		java.sql.Date fecha = new java.sql.Date(calendar.getTime()
+				.getTime());
+		try
+		{
+			PreparedStatement prep = t
+					.prepareStatement("SELECT valorPesos FROM ValoresMoneda WHERE fecha = ? AND idMoneda = ?;");
+			
+			prep.setDate(1, fecha);			
+			prep.setInt(2, 1);			
+			ResultSet rs = prep.executeQuery();
+			
+			if (rs.next())
+				valor = rs.getDouble(1);
+			
+	  }
+		catch (SQLException e) {
+			throw new PersistenciaException(e.getMessage());
+			} catch (PersistenciaException e) {
+			throw new PersistenciaException(e.getMessage());
+			}
+		
+		return valor;
+}
+}
+

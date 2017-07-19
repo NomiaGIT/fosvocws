@@ -1,0 +1,80 @@
+/*    */package logica.productos.refaccion;
+
+/*    */
+/*    */import java.io.Serializable;
+/*    */
+import java.util.Calendar;
+
+/*    */
+/*    */public class Cotizacion
+/*    */implements Serializable
+/*    */{
+	/*    */public Calendar Fecha;
+	/*    */public double MontoPresupuesto;
+	/*    */public String DetalleMateriales;
+	/*    */private Proveedor proveedor;
+
+	/*    */
+	/*    */public Cotizacion(Calendar fecha, double montoPresupuesto,
+			String detalleMateriales, Proveedor proveedor)
+	/*    */{
+		/* 29 */this.Fecha = fecha;
+		/* 30 */this.MontoPresupuesto = montoPresupuesto;
+		/* 31 */this.DetalleMateriales = detalleMateriales;
+		/* 32 */this.proveedor = proveedor;
+		/*    */}
+
+	/*    */
+	/*    */public Calendar getFecha()
+	/*    */{
+		/* 39 */return this.Fecha;
+		/*    */}
+
+	/*    */
+	/*    */public void setFecha(Calendar fecha)
+	/*    */{
+		/* 47 */this.Fecha = fecha;
+		/*    */}
+
+	/*    */
+	/*    */public double getMontoPresupuesto()
+	/*    */{
+		/* 54 */return this.MontoPresupuesto;
+		/*    */}
+
+	/*    */
+	/*    */public void setMontoPresupuesto(double montoPresupuesto)
+	/*    */{
+		/* 62 */this.MontoPresupuesto = montoPresupuesto;
+		/*    */}
+
+	/*    */
+	/*    */public String getDetalleMateriales()
+	/*    */{
+		/* 69 */return this.DetalleMateriales;
+		/*    */}
+
+	/*    */
+	/*    */public void setDetalleMateriales(String detalleMateriales)
+	/*    */{
+		/* 77 */this.DetalleMateriales = detalleMateriales;
+		/*    */}
+
+	/*    */
+	/*    */public Proveedor getProveedor()
+	/*    */{
+		/* 84 */return this.proveedor;
+		/*    */}
+
+	/*    */
+	/*    */public void setProveedor(Proveedor proveedor)
+	/*    */{
+		/* 92 */this.proveedor = proveedor;
+		/*    */}
+	/*    */
+}
+
+/*
+ * Location: C:\Users\Sole\Desktop\servidor\ Qualified Name:
+ * logica.productos.refaccion.Cotizacion JD-Core Version: 0.6.0
+ */

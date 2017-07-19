@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<ui:composition >
+	<ui:define name="content">
+	
+
+		<!-- Contenido del template -->
+		<div class="container">
+			<!-- Contenido de la pagina -->
+			<div class="row">
+				<div class="col-lg-12">
+					<!-- ancho del titulo-->
+					<h1 class="page-header"></h1>
+					<!-- cabezal-->
+					<div class="jumbotron">
+						
+						<h1><i class="fa fa-times-circle"></i>Error! 404</h1>
+						<p>El sistema ha encontrado un error :</p>
+						<p>
+							<h:outputText id="MsgError" value="Mensaje: Pagina no encontrada" />
+						</p>
+						<p>
+							<a class="btn btn-primary btn-lg" href="Inicio.xhtml">Volver
+								a inicio</a>
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+
+	</ui:define>
+</ui:composition>
+
+</html>
+

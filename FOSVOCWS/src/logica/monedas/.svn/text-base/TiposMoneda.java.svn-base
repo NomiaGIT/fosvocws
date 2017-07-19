@@ -1,0 +1,148 @@
+package logica.monedas;
+
+
+import excepciones.PersistenciaException;
+
+import java.sql.PreparedStatement;
+
+import java.sql.ResultSet;
+
+import java.sql.SQLException;
+
+import java.util.List;
+
+import java.util.Vector;
+
+import persistencia.Transaccion;
+
+
+public class TiposMoneda
+{
+	public void ingresarTipoMoneda(Transaccion t, String descripcion)
+	throws PersistenciaException
+	{
+		/* 18 */PreparedStatement prep = t
+				/* 19 */.prepareStatement("INSERT INTO TipoMoneda (descripcion) VALUES (?);");
+		try {
+			/* 21 */prep.setString(1, descripcion);
+			
+			/* 23 */if (prep.executeUpdate() != 1)
+				/* 24 */throw new PersistenciaException(
+				/* 25 */"No ha sido posible realizar la operación");
+			}
+		catch (SQLException e)
+		{
+			/* 29 */throw new PersistenciaException(e.getMessage());
+			} catch (PersistenciaException e) {
+			/* 31 */throw new PersistenciaException(e.getMessage());
+			}
+		}
+
+	
+	public void eliminarTipoMoneda(Transaccion t, String descripcion)
+	throws PersistenciaException
+	{
+		/* 39 */PreparedStatement prep = t
+				/* 40 */.prepareStatement("DELETE FROM TipoMoneda WHERE descripcion = ?;");
+		try
+		{
+			/* 43 */prep.setString(1, descripcion);
+			/* 44 */if (prep.executeUpdate() != 1)
+				/* 45 */throw new PersistenciaException(
+				/* 46 */"No ha sido posible realizar la operación");
+			}
+		catch (SQLException e) {
+			/* 49 */throw new PersistenciaException(e.getMessage());
+			} catch (PersistenciaException e) {
+			/* 51 */throw new PersistenciaException(e.getMessage());
+			}
+		}
+
+	
+	public int ingresarTipoMonedaInt(Transaccion t, String descripcion)
+	throws PersistenciaException
+	{
+		/* 59 */int key = 0;
+		/* 60 */ResultSet rs = null;
+		/* 61 */PreparedStatement prep = t
+				/* 62 */.prepareStatement("INSERT INTO TipoMoneda (descripcion) VALUES (?);");
+		try {
+			/* 64 */prep.setString(1, descripcion);
+			
+			/* 66 */if (prep.executeUpdate() != 1) {
+				/* 67 */throw new PersistenciaException(
+				/* 68 */"No ha sido posible realizar la operación");
+				}
+			/* 70 */rs = prep.getGeneratedKeys();
+			
+			/* 72 */if (rs.next()) {
+				/* 73 */key = rs.getInt(1);
+				}
+			/* 75 */rs.close();
+			/* 76 */prep.close();
+			}
+		catch (SQLException e) {
+			/* 79 */throw new PersistenciaException(e.getMessage());
+			} catch (PersistenciaException e) {
+			/* 81 */throw new PersistenciaException(e.getMessage());
+			}
+		/* 83 */return key;
+		}
+
+	
+	public void modificarTipoMoneda(Transaccion t,
+			String descripcionVieja, String descripcionNueva)
+	throws PersistenciaException
+	{
+		/* 89 */PreparedStatement prep = t
+				/* 90 */.prepareStatement("UPDATE TipoMoneda SET descripcion = ? WHERE descripcion = ?;");
+		try
+		{
+			/* 93 */prep.setString(1, descripcionNueva);
+			/* 94 */prep.setString(2, descripcionVieja);
+			
+			/* 96 */if (prep.executeUpdate() != 1)
+				/* 97 */throw new PersistenciaException(
+				/* 98 */"No ha sido posible realizar la operación");
+			}
+		catch (SQLException e)
+		{
+			throw new PersistenciaException(e.getMessage());
+			} catch (PersistenciaException e) {
+			throw new PersistenciaException(e.getMessage());
+			}
+		}
+
+	
+	public List<String> listarTiposMoneda(Transaccion t)
+	throws PersistenciaException
+	{
+		Vector lista = new Vector();
+		try
+		{
+			PreparedStatement prep = t
+			.prepareStatement("SELECT descripcion FROM TipoMoneda;");
+			
+			ResultSet rs = prep.executeQuery();
+			
+			while (rs.next())
+			{
+				String cadena = rs.getString(1);
+				lista.add(cadena);
+				}
+			}
+		catch (SQLException e) {
+			throw new PersistenciaException(e.getMessage());
+			} catch (PersistenciaException e) {
+			throw new PersistenciaException(e.getMessage());
+			}
+		
+		return lista;
+		}
+	
+}
+
+/*
+ * Location: C:\Users\Sole\Desktop\servidor\ Qualified Name:
+ * logica.monedas.TiposMoneda JD-Core Version: 0.6.0
+ */
