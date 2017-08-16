@@ -33,4 +33,9 @@ public class SolicitudResource {
 		public DataListarSolicitudesResponse listarSolicitudesdeAportante(@PathParam("cedula")int cedula){
 			return sistema.listarSolicitudesdeAportante(cedula);
 		}
+	   @GET
+		@Path("getActiveFrom/{cedula}") 
+		public DataListarSolicitudesResponse getSolicitudesActivasDe(@PathParam("cedula") int cedula) {
+			return sistema.buscarSolicitudesActivas(cedula);
+		}
 }

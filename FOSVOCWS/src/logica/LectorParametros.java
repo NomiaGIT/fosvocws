@@ -29,6 +29,8 @@ import java.util.Properties;
 	private String nombreObjetoRMIPrestamos;
 	private String nombreObjetoRMIParametros;
 	private int version;
+	private String mailremitente;
+	private String passremitente;
 
 	public LectorParametros(String ruta) throws PersistenciaException {
 
@@ -53,7 +55,8 @@ import java.util.Properties;
 			this.nombreObjetoRMIPrestamos = prop.getProperty("nombreObjetoRMIPrestamos");
 			this.nombreObjetoRMIParametros = prop.getProperty("nombreObjetoRMIParametros");
 			this.version = Integer.parseInt(prop.getProperty("version"));
-
+			this.mailremitente = prop.getProperty("mailremitente");
+			this.passremitente = prop.getProperty("passremitente");
 		} catch (FileNotFoundException ex) {
 			System.out.println(ex.getMessage());
 			throw new PersistenciaException(ex.getMessage());
@@ -155,6 +158,34 @@ public String getDriverBase() {
 	 */
 	public void setNombreObjetoRMIParametros(String nombreObjetoRMIParametros) {
 		this.nombreObjetoRMIParametros = nombreObjetoRMIParametros;
+	}
+
+
+
+
+	public String getMailremitente() {
+		return mailremitente;
+	}
+
+
+
+
+	public void setMailremitente(String mailremitente) {
+		this.mailremitente = mailremitente;
+	}
+
+
+
+
+	public String getPassremitente() {
+		return passremitente;
+	}
+
+
+
+
+	public void setPassremitente(String passremitente) {
+		this.passremitente = passremitente;
 	}
 
 }

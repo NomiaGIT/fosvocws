@@ -2,6 +2,8 @@ package datatypes;
 
 import java.io.Serializable;
 
+import com.google.gson.Gson;
+
 @SuppressWarnings("serial")
 public class DataListarSolicitudes implements Serializable {
 	private int numeroSolicitud;
@@ -152,6 +154,19 @@ public class DataListarSolicitudes implements Serializable {
 	 */
 	public void setEstado(String estado) {
 		this.estado = estado;
+	}
+	public DataListarSolicitudes(String json)
+	{
+		Gson gson = new Gson();
+		DataListarSolicitudes d = gson.fromJson(json, DataListarSolicitudes.class);		
+		this.numeroSolicitud = d.getNumeroSolicitud();
+		this.documento = d.getDocumento();
+		this.apellido = d.getApellido();
+		this.nombre = d.getNombre();
+		this.departamento = d.getDepartamento();
+		this.puntaje = d.getPuntaje();
+		this.montoSolicitado = d.getMontoSolicitado();
+		this.estado = d.getEstado();
 	}
 
 }

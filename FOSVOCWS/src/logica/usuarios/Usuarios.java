@@ -224,12 +224,116 @@ public class Usuarios {
 			ResultSet rs = prep.executeQuery();
 			if (rs.next())
 				resu = rs.getString(1);
+			rs.close();
+			prep.close();
 		} catch (SQLException e) {
 			throw new PersistenciaException(e.getMessage());
 		} catch (PersistenciaException e) {			
 			throw new PersistenciaException(e.getMensaje());
 		}
 		return resu;
+	}
+
+	public boolean existeTrabajador(Transaccion t, int ced) throws PersistenciaException {
+		
+		boolean resu = false;
+		try {
+			PreparedStatement prep = t.prepareStatement("SELECT * FROM Usuarios WHERE cedula = ? AND idRol = 2;");
+			prep.setInt(1, ced);			
+			ResultSet rs = prep.executeQuery();
+			if (rs.next())
+				resu = true;
+			rs.close();
+			prep.close();
+		} catch (SQLException e) {
+			throw new PersistenciaException(e.getMessage());
+		} catch (PersistenciaException e) {
+			throw new PersistenciaException(e.getMensaje());
+		}
+		return resu;
+	}
+
+	public boolean esActivo(Transaccion t, int ced) throws PersistenciaException{
+
+		boolean resu = false;
+		try {
+			PreparedStatement prep = t.prepareStatement("SELECT * FROM Usuarios WHERE cedula = ?;");
+			prep.setInt(1, ced);			
+			ResultSet rs = prep.executeQuery();
+			if (rs.next())
+			{
+				boolean act = rs.getBoolean("activo");
+				if(act)
+				resu = true;
+			}	
+			rs.close();
+			prep.close();
+		} catch (SQLException e) {
+			throw new PersistenciaException(e.getMessage());
+		} catch (PersistenciaException e) {
+			throw new PersistenciaException(e.getMensaje());
+		}
+		return resu;
+	}
+/**
+ * pone al usuario como activo, asigna la contrasenia previamente hasheada, e ingresa el email
+ * @param t
+ * @param ced
+ * @param pass
+ * @param emailNuevoUsuario
+ * @throws PersistenciaException
+ */
+	public void activar(Transaccion t, int ced, String pass, String emailNuevoUsuario) throws PersistenciaException{
+		try {
+			PreparedStatement prep = t.prepareStatement("UPDATE Usuarios SET pass = ?, email = ?, activo = 1 WHERE cedula = ?;");
+			prep.setString(1, pass);
+			prep.setString(2, emailNuevoUsuario);
+			prep.setInt(3, ced);			
+			if(prep.executeUpdate() != 1)
+				throw new PersistenciaException("No ha sido posible realizar la operación");
+		   	prep.close();
+		   	
+		} catch (SQLException e) {
+			throw new PersistenciaException(e.getMessage());
+		} catch (PersistenciaException e) {
+			throw new PersistenciaException(e.getMensaje());
+		}
+		
+	}
+
+	public boolean coincideMail(Transaccion t, String email, int cedula) throws PersistenciaException {
+		boolean resu = false;
+		try {
+			PreparedStatement prep = t.prepareStatement("SELECT * FROM Usuarios WHERE cedula = ? ;");
+			prep.setInt(1, cedula);
+			ResultSet rs = prep.executeQuery();
+			if (rs.next()) {
+				String em = rs.getString("email");
+				if (em.equals(email))
+					resu = true;
+			}
+			rs.close();
+			prep.close();
+		} catch (SQLException e) {
+			throw new PersistenciaException(e.getMessage());
+		} catch (PersistenciaException e) {
+			throw new PersistenciaException(e.getMensaje());
+		}
+		return resu;
+	}
+
+	public void modificarContrasenia(int ced, String nuevapass, Transaccion t) throws PersistenciaException {
+		PreparedStatement prep = t.prepareStatement("UPDATE Usuarios SET pass = ? WHERE cedula = ?;");
+		try {
+			prep.setString(1, nuevapass);
+			prep.setInt(2, ced);
+			if (prep.executeUpdate() != 1)
+				throw new PersistenciaException("No ha sido posible realizar la operación");
+		} catch (SQLException e) {
+			throw new PersistenciaException(e.getMessage());
+		} catch (PersistenciaException e) {
+			throw new PersistenciaException(e.getMessage());
+		}
 	}
 
 }

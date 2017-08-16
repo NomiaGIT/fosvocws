@@ -2,6 +2,8 @@ package datatypes.response;
 
 import java.io.Serializable;
 
+import com.google.gson.Gson;
+
 import datatypes.DataAdjudicacion;
 import datatypes.DataMensaje;
 
@@ -26,6 +28,12 @@ public class DataAdjudicacionResponse implements Serializable {
 	public void setDm(DataMensaje dm) {
 		this.dm = dm;
 	}
-	
+	public DataAdjudicacionResponse(String json)
+	{
+		Gson gson = new Gson();
+		DataAdjudicacionResponse dr = gson.fromJson(json, DataAdjudicacionResponse.class);
+		this.data = dr.getData();
+		this.dm = dr.getDm();
+	}
 
 }

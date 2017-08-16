@@ -2,6 +2,8 @@ package utilitarios;
 
 import java.security.MessageDigest;
 import java.util.Arrays;
+import java.util.Random;
+
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -92,4 +94,15 @@ public class Utilidades {
 	    	   }
 	    	   return array;
 	    	}
+	    public static String generarPasswordAleatorio(int cuantosCaracteres)
+	    {
+	    	 char[] caracteres;
+	         caracteres = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
+	         String pass = "";
+	             for (int i = 0; i < cuantosCaracteres; i++) {
+	                 pass += caracteres[new Random().nextInt(62)];
+	             }
+	            // System.out.println( "La contraseña es: "+pass);	         
+	         return pass;
+	    }
 }

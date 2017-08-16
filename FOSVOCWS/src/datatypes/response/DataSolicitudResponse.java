@@ -1,24 +1,17 @@
 package datatypes.response;
 
-import java.io.Serializable;
+import com.google.gson.Gson;
 
 import datatypes.DataMensaje;
-import datatypes.DataSolicitud;
+import datatypes.DataSolicitudweb;
 
-@SuppressWarnings("serial")
-public class DataSolicitudResponse implements Serializable{
-	private DataSolicitud data;
+public class DataSolicitudResponse {
 	private DataMensaje dm;
-	public DataSolicitudResponse(DataSolicitud data, DataMensaje dm) {
+	private DataSolicitudweb ds;
+	public DataSolicitudResponse(DataMensaje dm, DataSolicitudweb ds) {
 		super();
-		this.data = data;
 		this.dm = dm;
-	}
-	public DataSolicitud getData() {
-		return data;
-	}
-	public void setData(DataSolicitud data) {
-		this.data = data;
+		this.ds = ds;
 	}
 	public DataMensaje getDm() {
 		return dm;
@@ -26,6 +19,18 @@ public class DataSolicitudResponse implements Serializable{
 	public void setDm(DataMensaje dm) {
 		this.dm = dm;
 	}
-	
+	public DataSolicitudweb getDs() {
+		return ds;
+	}
+	public void setDs(DataSolicitudweb ds) {
+		this.ds = ds;
+	}
+	public DataSolicitudResponse (String json)
+	{
+		Gson gson = new Gson();
+		DataSolicitudResponse dsol = gson.fromJson(json, DataSolicitudResponse.class);
+		this.dm = dsol.getDm();
+		this.ds = dsol.getDs();
+	}
 
 }

@@ -4,15 +4,22 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Vector;
 
 import datatypes.DataAdjudicacion;
+import datatypes.DataCuota;
 import datatypes.DataListarAdjudicaciones;
 import excepciones.PersistenciaException;
+import logica.monedas.ValoresMoneda;
+import logica.productos.refaccion.Refaccion;
 import logica.solicitudes.Solicitud;
 import logica.solicitudes.Solicitudes;
 import persistencia.Transaccion;
+import prestamos.datatypes.DataListadoCuotasAPagar;
+import utilitarios.Formato;
 
 public class Adjudicaciones {
 
@@ -37,10 +44,25 @@ public class Adjudicaciones {
 					plazo = rs.getInt(7);
 				}
 				Solicitud solicitud = solicitudes.buscarSolicitudVersion2016(t, id);
-				Contrato contrato = contratos.buscar(t, id);				
+				Contrato contrato = contratos.buscar(t, id);		
+				ValoresMoneda v = new ValoresMoneda();
+				Calendar hoy = Calendar.getInstance();
+				double valorUI = v.getCotizacionUI(t, hoy.get(Calendar.MONTH), hoy.get(Calendar.YEAR));
+				Cuotas c = new Cuotas();
+				Vector<DataListadoCuotasAPagar> cuot = c.listarCuotasPorSolicitudVersion2(t, id);
+				List<DataCuota> cuotas = new ArrayList<DataCuota>();				
+				for(DataListadoCuotasAPagar cc : cuot)
+				{
+					DataCuota dc = new DataCuota(cc.getIdcuota(), cc.getNumeroCuota(), cc.getFechaVencimiento(),
+							(int)cc.getMontoUI(), true, (int)cc.getMonto$(), cc.getFechaPago());
+					cuotas.add(dc);
+				}
 				ModoAdjudicacion modoAdjudicacion = new ModoAdjudicacion(tipo);
 				adjudicacion = new Adjudicacion(fecha, plazo, modoAdjudicacion, solicitud, contrato);
-				resu = new DataAdjudicacion(adjudicacion.getFecha(), adjudicacion.getPlazoRetiro(), adjudicacion.getModo(), adjudicacion.getSolicitud(), adjudicacion.getContrato());
+				resu = new DataAdjudicacion(Formato.convertirCalendarCorto(adjudicacion.getFecha()),0, modoAdjudicacion.getTipo(),
+						solicitud.getId(), Formato.convertirCalendarCorto(fecha), (int)contrato.getCredito().getMontoUI(), contrato.getCantCuotasTotal(), 
+						cuotas, ((Refaccion)solicitud.getPrestamo()).getCotizacion().getProveedor().getNombreBarraca(),
+						solicitud.getEstado(), valorUI);			
 
 			} catch (SQLException e) {
 				throw new PersistenciaException("Error al acceder a los datos");
@@ -98,7 +120,7 @@ public class Adjudicaciones {
 
 	public Vector<DataListarAdjudicaciones> listarAdjudicacionesDeAportante(Transaccion t, int cedula) throws PersistenciaException{
 		Vector<DataListarAdjudicaciones> lista = new Vector<DataListarAdjudicaciones>();
-		String sql = " select solicitudes.id, aportantes.cedula, usuarios.nombres, usuarios.apellidos, refacciones.totalsolicitado, contratos.fecha, proveedores.nombre, ordenesdecompra.monto, domicilios.telefonos"
+		String sql = " select solicitudes.id, aportantes.cedula, usuarios.nombres, usuarios.apellidos, refacciones.totalsolicitado, contratos.fecha, proveedores.nombre, ordenesdecompra.monto, domicilios.telefonos, solicitudes.estado"
 				+ " from solicitudes, aportantes,usuarios,refacciones,adjudicaciones, proveedores, ordenesdecompra, solicitudesadjudicadas, prestamos, cotizaciones, contratos, domicilios"
 				+ " where solicitudes.cedulaAportante = aportantes.cedula AND"
 				+ " aportantes.cedula = usuarios.cedula"
@@ -128,8 +150,9 @@ public class Adjudicaciones {
 				String proveedor = rs.getString(7);
 				int montoPesos = rs.getInt(8);
 				String telefonos = rs.getString(9);
+				String estado = rs.getString(10);
 				DataListarAdjudicaciones dataListadoAdjudicacion = new DataListarAdjudicaciones(idSolicitud, nombres, apellidos, cedula, monto, fechaS, proveedor, montoPesos,
-						telefonos);
+						telefonos, estado);
 				lista.add(dataListadoAdjudicacion);
 			}
 		} catch (SQLException e) {

@@ -2,6 +2,8 @@ package datatypes;
 
 import java.io.Serializable;
 
+import com.google.gson.Gson;
+
 @SuppressWarnings("serial")
 public class DataListarAdjudicaciones implements Serializable {
 	private int numeroSolicitud;
@@ -13,6 +15,7 @@ public class DataListarAdjudicaciones implements Serializable {
 	private String nombreBarraca;
 	private int montoEnPesos;
 	private String telefono;
+	private String estado;
 
 	/**
 	 * @param numeroSolicitud
@@ -24,7 +27,7 @@ public class DataListarAdjudicaciones implements Serializable {
 	 * @param nombreBarraca
 	 */
 	public DataListarAdjudicaciones(int numeroSolicitud, String nombre, String apellido, int documento, double montoSolicitado, String fechaAprobacion, String nombreBarraca,
-			int montoEnPesos) {
+			int montoEnPesos, String estado) {
 		this.numeroSolicitud = numeroSolicitud;
 		this.nombre = nombre;
 		this.apellido = apellido;
@@ -33,10 +36,11 @@ public class DataListarAdjudicaciones implements Serializable {
 		this.fechaAprobacion = fechaAprobacion;
 		this.nombreBarraca = nombreBarraca;
 		this.montoEnPesos = montoEnPesos;
+		this.estado = estado;
 	}
 
 	public DataListarAdjudicaciones(int numeroSolicitud, String nombre, String apellido, int documento, double montoSolicitado, String fechaAprobacion, String nombreBarraca,
-			int montoEnPesos, String telefono) {
+			int montoEnPesos, String telefono, String estado) {
 		this.numeroSolicitud = numeroSolicitud;
 		this.nombre = nombre;
 		this.apellido = apellido;
@@ -46,6 +50,7 @@ public class DataListarAdjudicaciones implements Serializable {
 		this.nombreBarraca = nombreBarraca;
 		this.montoEnPesos = montoEnPesos;
 		this.telefono = telefono;
+		this.estado = estado;
 	}
 
 	/**
@@ -181,5 +186,28 @@ public class DataListarAdjudicaciones implements Serializable {
 	 */
 	public void setNombreBarraca(String nombreBarraca) {
 		this.nombreBarraca = nombreBarraca;
+	}
+
+	public String getEstado() {
+		return estado;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
+	public DataListarAdjudicaciones(String json)
+	{
+		Gson gson = new Gson();
+		DataListarAdjudicaciones dl = gson.fromJson(json, DataListarAdjudicaciones.class);
+		this.numeroSolicitud = dl.getNumeroSolicitud();
+		this.nombre = dl.getNombre();
+		this.apellido = dl.getApellido();
+		this.documento = dl.getDocumento();
+		this.montoSolicitado = dl.getMontoSolicitado();
+		this.fechaAprobacion = dl.getFechaAprobacion();
+		this.nombreBarraca = dl.getNombreBarraca();
+		this.montoEnPesos = dl.getMontoEnPesos();
+		this.telefono = dl.getTelefono();
+		this.estado = dl.getEstado();
 	}
 }

@@ -1,9 +1,11 @@
 package logica;
 
+import datatypes.DataAltaUsuario;
 import datatypes.DataAportante;
 import datatypes.DataContrasenia;
 import datatypes.DataLoginIn;
 import datatypes.DataMensaje;
+import datatypes.DataRecuperarContrasenia;
 import datatypes.DataUsuario;
 import datatypes.response.DataAdjudicacionResponse;
 import datatypes.response.DataAportanteResponse;
@@ -119,9 +121,9 @@ public class Fachada {
 	public DataSolicitudResponse buscarSolicitud(int id) {
 		DataSolicitudResponse resu = null;
 		try {
-			resu = sistema.buscarSolicitud(id);
+			resu = sistema.buscarSolicitudweb(id);
 		} catch (PersistenciaException e) {
-			resu = new DataSolicitudResponse(null, new DataMensaje("Error de acceso a datos", false));
+			resu = new DataSolicitudResponse(new DataMensaje("Error de acceso a datos", false), null);
 		}
 		return resu;
 	}
@@ -139,6 +141,16 @@ public class Fachada {
 		DataListarSolicitudesResponse resu = null;
 		try{
 			resu = sistema.listarSolicitudesDeAportante(cedula);
+		}catch ( PersistenciaException e)
+		{
+			resu = new DataListarSolicitudesResponse(null, new DataMensaje("Error de acceso a datos", false));
+		}
+		return resu;
+	}
+	public DataListarSolicitudesResponse buscarSolicitudesActivas(int cedula) {
+		DataListarSolicitudesResponse resu = null;
+		try{
+			resu = sistema.listarSolicitudesActivasDeAportante(cedula);
 		}catch ( PersistenciaException e)
 		{
 			resu = new DataListarSolicitudesResponse(null, new DataMensaje("Error de acceso a datos", false));
@@ -174,6 +186,27 @@ public class Fachada {
 		}
 		return resu;
 	}
+	public DataMensaje solicitarNuevoUsuario(DataAltaUsuario usuario) {
+		DataMensaje resu = null;
+		try{
+			resu = sistema.solicitarNuevoUsuario(usuario);
+		}catch ( PersistenciaException e)
+		{
+			resu = new DataMensaje("Error de acceso a datos", false);
+		}
+		return resu;
+	}
+	public DataMensaje solicitarNuevaContrasenia(DataRecuperarContrasenia data) {
+		DataMensaje resu = null;
+		try{
+			resu = sistema.solicitarNuevaContrasenia(data);
+		}catch ( PersistenciaException e)
+		{
+			resu = new DataMensaje("Error de acceso a datos", false);
+		}
+		return resu;
+	}
+	
 
 
 }

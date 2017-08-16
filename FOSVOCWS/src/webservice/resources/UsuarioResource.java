@@ -10,9 +10,11 @@ import logica.Fachada;
 
 import com.google.gson.Gson;
 
+import datatypes.DataAltaUsuario;
 import datatypes.DataContrasenia;
 import datatypes.DataLoginIn;
 import datatypes.DataMensaje;
+import datatypes.DataRecuperarContrasenia;
 import datatypes.DataUsuario;
 import datatypes.response.DataUsuarioLoginResponse;
 import datatypes.response.DataUsuarioResponse;
@@ -75,6 +77,18 @@ public class UsuarioResource {
 		Gson gson = new Gson();
 		DataContrasenia d = gson.fromJson(data, DataContrasenia.class);
 		return fachada.modificarContrasenia(d);		
+	}
+	@POST
+	@Path("new")
+	public DataMensaje solicitarNuevoUsuario(DataAltaUsuario usuario) {
+		DataMensaje mensaje = fachada.solicitarNuevoUsuario(usuario);
+		return mensaje;
+	}
+	@POST
+	@Path("newpass")
+	public DataMensaje solicitarNuevaPassword(DataRecuperarContrasenia data) {
+		DataMensaje mensaje = fachada.solicitarNuevaContrasenia(data);
+		return mensaje;
 	}
 	
 }

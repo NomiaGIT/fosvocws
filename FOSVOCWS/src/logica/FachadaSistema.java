@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.Vector;
 
 import datatypes.DataAdjudicacion;
+import datatypes.DataAltaUsuario;
 import datatypes.DataAportante;
 import datatypes.DataContrasenia;
 import datatypes.DataListarAdjudicaciones;
@@ -13,7 +14,9 @@ import datatypes.DataListarAportantes;
 import datatypes.DataListarSolicitudes;
 import datatypes.DataLoginIn;
 import datatypes.DataMensaje;
+import datatypes.DataRecuperarContrasenia;
 import datatypes.DataSolicitud;
+import datatypes.DataSolicitudweb;
 import datatypes.DataUsuario;
 import datatypes.DataUsuarioLogin;
 import datatypes.response.DataAdjudicacionResponse;
@@ -49,6 +52,7 @@ import persistencia.PoolTransacciones;
 import persistencia.Transaccion;
 import prestamos.Adjudicaciones;
 import utilitarios.Formato;
+import utilitarios.Utilidades;
 
 public class FachadaSistema {
 	PoolTransacciones pool;
@@ -534,15 +538,15 @@ public class FachadaSistema {
 		return resu;
 	}
 
-	public DataSolicitudResponse buscarSolicitud(int id) throws PersistenciaException{
+	public DataSolicitudResponse buscarSolicitudweb(int id) throws PersistenciaException{
 		DataSolicitudResponse resu = null;
-		DataSolicitud data = null;
+		DataSolicitudweb data = null;
 		DataMensaje dm = null;
 		String msj = null;
 		boolean ok;
 		Transaccion t = pool.obtenerTransaccion(Connection.TRANSACTION_SERIALIZABLE);
 		try {
-			data = solicitudes.buscarSolicitudRefaccionVersion2016(t, id);
+			data = solicitudes.buscarSolicitudRefaccionVersion2016web(t, id);
 			if (data != null) {
 				msj = "OK";
 				ok = true;
@@ -563,7 +567,7 @@ public class FachadaSistema {
 		} finally {
 			pool.liberarTransaccion(t);
 		}
-		resu = new DataSolicitudResponse(data, dm);
+		resu = new DataSolicitudResponse( dm, data);
 		return resu;
 	}
 
@@ -600,6 +604,37 @@ public class FachadaSistema {
 		Transaccion t = pool.obtenerTransaccion(Connection.TRANSACTION_SERIALIZABLE);
 		try {
 			vec = solicitudes.listarDataListadoSolicitudesDeAportante(t, cedula);
+			if(!vec.isEmpty())
+			{
+				msj = "OK";
+			    ok = true;
+			    dm = new DataMensaje(msj, ok);
+			}else{
+				msj = "No hay solicitudes de ese aportante";
+			    ok = false;
+			    dm = new DataMensaje(msj, ok);
+			}			
+			t.finalizarTransaccion(true);
+		} catch (PersistenciaException e) {
+			msj = "Error al acceder a los datos. Intentelo nuevamente. \n Si persiste, consulte la ayuda";
+			ok = false;
+			dm = new DataMensaje(msj, ok);
+			t.finalizarTransaccion(false);
+		} finally {
+			pool.liberarTransaccion(t);
+		}
+		resu = new DataListarSolicitudesResponse(vec, dm);
+		return resu;
+	}
+	public DataListarSolicitudesResponse listarSolicitudesActivasDeAportante(int cedula) throws PersistenciaException{
+		DataListarSolicitudesResponse resu = null;
+		Vector<DataListarSolicitudes> vec = null;
+		DataMensaje dm = null;
+		String msj;
+		boolean ok;
+		Transaccion t = pool.obtenerTransaccion(Connection.TRANSACTION_SERIALIZABLE);
+		try {
+			vec = solicitudes.listarDataListadoSolicitudesActivasDeAportante(t, cedula);
 			if(!vec.isEmpty())
 			{
 				msj = "OK";
@@ -714,7 +749,112 @@ public class FachadaSistema {
 		resu = new DataListarAdjudicacionesResponse(vec, dm);
 		return resu;
 	}
+	public DataMensaje solicitarNuevoUsuario(DataAltaUsuario usuario) throws PersistenciaException{
+		DataMensaje resu = null;
+		String msj;
+		boolean ok;
+		Transaccion t = pool.obtenerTransaccion(Connection.TRANSACTION_SERIALIZABLE);
+		int ced = usuario.getCedulaNuevoUsuario();
+		try {
+			boolean existeTrab = usuarios.existeTrabajador(t, ced);
+			if(existeTrab)
+			{
+				boolean estaActivo = usuarios.esActivo(t, ced);
+				if(!estaActivo)
+				{					
+					String pass = Utilidades.Encriptar(ced+"");
+					usuarios.activar(t, ced, pass, usuario.getEmailNuevoUsuario());		
+				//	EnviarMail.enviarmailConfirmacionCuenta(ced, usuario.getEmailNuevoUsuario(), usuario.getNombreNuevoUsuario(), usuario.getApellidoNuevoUsuario());
+					msj = "OK";
+				    ok = true;
+				    resu = new DataMensaje(msj, ok);				
+			        t.finalizarTransaccion(true);
+				}else
+				{
+					msj = "El usuario ya está registrado en el sistema de autogestón.";
+					ok = false;
+					resu = new DataMensaje(msj, ok);				
+				    t.finalizarTransaccion(true);
+				}
+				
+			}else
+			{
+				msj = "No se encuentra ese número de documento en nuestros registros.";
+				ok = false;
+				resu = new DataMensaje(msj, ok);				
+			    t.finalizarTransaccion(true);
+			}		
+				
+		} catch (PersistenciaException e) {
+			msj = "Error al acceder a los datos. Intentelo nuevamente. \n Si persiste, consulte la ayuda";
+			ok = false;
+			resu = new DataMensaje(msj, ok);
+			t.finalizarTransaccion(false);
+		} finally {
+			pool.liberarTransaccion(t);
+		}		
+		return resu;
+	}
 
+	public DataMensaje solicitarNuevaContrasenia(DataRecuperarContrasenia data) throws PersistenciaException{
+		DataMensaje resu = null;
+		String msj;
+		boolean ok;
+		Transaccion t = pool.obtenerTransaccion(Connection.TRANSACTION_SERIALIZABLE);
+		int ced = data.getCedula();
+		try {
+			boolean existeTrab = usuarios.existeTrabajador(t, ced);
+			if(existeTrab)
+			{
+				boolean estaActivo = usuarios.esActivo(t, ced);
+				if(estaActivo)
+				{					
+					boolean coincide = usuarios.coincideMail(t, data.getEmail(), ced);
+					if(coincide)
+					{
+						String nuevapass = Utilidades.generarPasswordAleatorio(8);	
+						String passhash = Utilidades.Encriptar(nuevapass); 
+						usuarios.modificarContrasenia(ced, passhash, t);		
+						//boolean si = EnviarMail.enviarMailResetearContrasenia(ced, data.getEmail());
+						msj = nuevapass;
+					    ok = true;
+					    resu = new DataMensaje(msj, ok);				
+				        t.finalizarTransaccion(true);
+					}else
+					{
+						msj = "La dirección de mail registrada en el sistema no coincide con la ingresada.";
+						ok = false;
+						resu = new DataMensaje(msj, ok);				
+					    t.finalizarTransaccion(true);
+					}
+					
+				}else
+				{
+					msj = "El usuario no está registrado en el sistema de autogestón.";
+					ok = false;
+					resu = new DataMensaje(msj, ok);				
+				    t.finalizarTransaccion(true);
+				}
+				
+			}else
+			{
+				msj = "No se encuentra ese número de documento en nuestros registros.";
+				ok = false;
+				resu = new DataMensaje(msj, ok);				
+			    t.finalizarTransaccion(true);
+			}
+			
+				
+		} catch (PersistenciaException e) {
+			msj = "Error al acceder a los datos. Intentelo nuevamente. \n Si persiste, consulte la ayuda";
+			ok = false;
+			resu = new DataMensaje(msj, ok);
+			t.finalizarTransaccion(false);
+		} finally {
+			pool.liberarTransaccion(t);
+		}		
+		return resu;
+	}
 
 	// METODOS PRIVADOS
 	public Accion generarAccion(String nombreMetodo, String descripcion, int clave) {
@@ -724,6 +864,11 @@ public class FachadaSistema {
 		accion = new Accion(estemomento, nombreMetodo, descripcion, clave);
 		return accion;
 	}
+
+
+	
+
+
 
 
 }

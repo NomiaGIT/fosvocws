@@ -3,6 +3,8 @@ package datatypes.response;
 import java.io.Serializable;
 import java.util.Vector;
 
+import com.google.gson.Gson;
+
 import datatypes.DataListarSolicitudes;
 import datatypes.DataMensaje;
 
@@ -32,5 +34,11 @@ public class DataListarSolicitudesResponse implements Serializable {
 	public void setDm(DataMensaje dm) {
 		this.dm = dm;
 	}
-
+public DataListarSolicitudesResponse(String json)
+{
+	Gson gson = new Gson();
+	DataListarSolicitudesResponse d = gson.fromJson(json, DataListarSolicitudesResponse.class);		
+	this.dm = d.getDm();
+	this.datos = d.getDatos();
+}
 }

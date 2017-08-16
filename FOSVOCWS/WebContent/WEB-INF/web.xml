@@ -21,6 +21,18 @@
     <param-name>javax.ws.rs.Application</param-name>
     <param-value>webservice.MyRESTApplication</param-value>
   </context-param>   
+  <context-param>
+  <param-name>cuentaEmail</param-name>
+  <param-value>soledad@i3.com.uy</param-value>
+ </context-param>
+  <context-param>
+  <param-name>passwordEmail</param-name>
+  <param-value>sole.fosvoc</param-value>
+ </context-param>
+  <context-param>
+  <param-name>cuentaEmailDestino</param-name>
+  <param-value>soledad@nomia.com.uy</param-value>
+ </context-param>
   <error-page>
   <error-code>500</error-code>
   <location>/Error500.xhtml</location>
